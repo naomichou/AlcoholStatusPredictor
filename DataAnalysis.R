@@ -8,6 +8,82 @@ dim(alc.test) #30000 27
 summary(alc.train)
 
 #-----------------------------------------------------------------------------------------
+#to check for missing patterns
+install.packages("VIM")
+
+#mice
+install.packages("mice")
+
+#data visualization
+install.packages("ggplot2")
+
+#-----------------------------------------------------------------------------------------
+#plot density plots
+library(ggplot2)
+library(gridExtra)
+
+g1 <- ggplot(alc.train, aes(age, color = Alcoholic.Status)) + geom_density()
+g2 <- ggplot(alc.train, aes(height, color = Alcoholic.Status)) + geom_density()
+g3 <- ggplot(alc.train, aes(weight, color = Alcoholic.Status)) + geom_density()
+g4 <- ggplot(alc.train, aes(waistline, color = Alcoholic.Status)) + geom_density()
+g5 <- ggplot(alc.train, aes(sight_left, color = Alcoholic.Status)) + geom_density()
+g6 <- ggplot(alc.train, aes(sight_right, color = Alcoholic.Status)) + geom_density()
+g7 <- ggplot(alc.train, aes(SBP, color = Alcoholic.Status)) + geom_density()
+g8 <- ggplot(alc.train, aes(DBP, color = Alcoholic.Status)) + geom_density()
+g9 <- ggplot(alc.train, aes(BLDS, color = Alcoholic.Status)) + geom_density()
+g10 <- ggplot(alc.train, aes(tot_chole, color = Alcoholic.Status)) + geom_density()
+g11 <- ggplot(alc.train, aes(HDL_chole, color = Alcoholic.Status)) + geom_density()
+g12 <- ggplot(alc.train, aes(LDL_chole, color = Alcoholic.Status)) + geom_density()
+g13 <- ggplot(alc.train, aes(triglyceride, color = Alcoholic.Status)) + geom_density()
+g14 <- ggplot(alc.train, aes(hemoglobin, color = Alcoholic.Status)) + geom_density()
+g15 <- ggplot(alc.train, aes(urine_protein, color = Alcoholic.Status)) + geom_density()
+g16 <- ggplot(alc.train, aes(serum_creatinine, color = Alcoholic.Status)) + geom_density()
+g17 <- ggplot(alc.train, aes(SGOT_AST, color = Alcoholic.Status)) + geom_density()
+g18 <- ggplot(alc.train, aes(SGOT_ALT, color = Alcoholic.Status)) + geom_density()
+g19 <- ggplot(alc.train, aes(gamma_GTP, color = Alcoholic.Status)) + geom_density()
+g20 <- ggplot(alc.train, aes(BMI, color = Alcoholic.Status)) + geom_density()
+
+grid.arrange(g1, g2, g3, g14, g19, g20, nrow = 2)
+grid.arrange(g9, g10, g11, g12, g13, g14, g15, g16, nrow = 2)
+grid.arrange(g17, g18, g19, g20, nrow = 1)
+
+#best numerical predictors
+grid.arrange(g1, g2, g3, g14, nrow = 1)
+
+#logistic regression for categorical variables
+#recode response variable into binary
+alc.train$Alcoholic.Status <- ifelse(alc.train$Alcoholic.Status == "Y", 1, 0)
+
+#create logistic regression model
+lr.m1 <- glm(Alcoholic.Status ~ sex + hear_left + hear_right + BMI.Category + AGE.Category
+             + Smoking.Status, data = alc.train, family = binomial())
+summary(lr.m1)
+
+
+#create stacked par charts
+library(ggplot2)
+alc.train$Alcoholic.Status <- as.factor(alc.train$Alcoholic.Status)
+
+
+p1 <- ggplot(alc.train, aes(x = sex, fill = Alcoholic.Status)) +
+  geom_bar(position = "fill") +
+  labs(y = "Proportion", title = "Stacked Bar Chart of Alcoholic Status by Sex") 
+
+p2 <- ggplot(alc.train, aes(x = Smoking.Status, fill = Alcoholic.Status)) +
+  geom_bar(position = "fill") +
+  labs(y = "Proportion", title = "Stacked Bar Chart of Alcoholic Status by Smoking Status") 
+
+p3 <- ggplot(alc.train, aes(x = AGE.Category, fill = Alcoholic.Status)) +
+  geom_bar(position = "fill") +
+  labs(y = "Proportion", title = "Stacked Bar Chart of Alcoholic Status by Age") 
+
+p4 <- ggplot(alc.train, aes(x = BMI.Category, fill = Alcoholic.Status)) +
+  geom_bar(position = "fill") +
+  labs(y = "Proportion", title = "Stacked Bar Chart of Alcoholic Status by BMI") 
+
+grid.arrange(p1, p2, p3, nrow = 2)
+
+#-----------------------------------------------------------------------------------------
 #find the number of numerical predictors
 num_predictors <- sapply(alc.train, is.numeric)
 sum(num_predictors) #there are 21 predictors
@@ -34,7 +110,6 @@ freq_train <- table(alc.train$Alcoholic.Status)
 prop_train <- prop.table(freq_train)
 
 #check for missing data patterns
-install.packages("VIM")
 library(VIM)
 alc.train_plot <- aggr(alc.train, col = c("lightblue", "pink"), numbers = TRUE, sortVars = TRUE,
                        labels = names(alc.train), cex.axis = 7, gap = 3, 
@@ -45,11 +120,8 @@ alc.train_plot
 
 #-----------------------------------------------------------------------------------------
 #handle missing values using MICE
-#mice
-install.packages("mice")
-library(mice)
-
 #understand pattern for missing values
+library(mice)
 md.pattern(alc.train)
 
 #impute data using mice

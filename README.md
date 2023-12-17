@@ -1,4 +1,3 @@
 # AlcoholStatusPredictor
 
-THIS IS MY FINAL PROJECT FOR STATS 101C - INTRODUCTION TO STATISTICAL MODELS AND DATA MINING - AT UCLA.
-THE DATA WAS RETRIEVED FROM THE NATIONAL HEALTH INSURANCE IN SOUTH KOREA AND WAS PROCESSED USING R PACKAGES. USING VARIOUS MACHINE LEARNING ALGORITHMS, I DEVELOPED A PREDICTIVE MODEL TO DETERMINE THE ALCOHOLIC STATUS OF AN INDIVIDUAL. MY RANDOM FOREST MODEL ACHIEVED AN ACCURACY OF 73%. 
+This is my final project for Stats 101C - Introduction to Statistical Models and Data Mining - at UCLA. The data was retrieved from the National Health Insurace Service in South Korea, and was processed and cleaned using the R package, mice. Using various machine learning algorithms, I developed a predictive model to determine the alcoholic status of an individual. Results showed that the random forest model achieved an accuracy of 73%. 
